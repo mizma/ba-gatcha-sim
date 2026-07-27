@@ -56,7 +56,6 @@ def pout(msg=None, Verbose=0, level=Level.INFO, newline=True):
     click.echo(click.style(str(msg), fg=fg), nl=newline, err=error)
 
 def old_pull(count, Verbose=0):
-    # TODO: Implement pull system
     if count >= 199:
         return True
     elif random.random() < 0.007:
@@ -64,7 +63,7 @@ def old_pull(count, Verbose=0):
     else:
         return False
 
-def old_sim(target=2, cycles=10000, reset=False, Verbose=0):
+def old_sim(target=2, cycles=10000, reset=False, rcount=2, Verbose=0):
     pout("Starting Old Gatcha Simulation")
     pout(f"target={target}, cycles={cycles}", Verbose, Level.DEBUG )
     MAX_PULLS = (target * 200)
@@ -80,7 +79,7 @@ def old_sim(target=2, cycles=10000, reset=False, Verbose=0):
             if old_pull(p_cnt, Verbose):
                 pout(f"Success at pull={pull}, p_cnt={p_cnt}", Verbose, Level.DEBUG)
                 pulls += 1
-                if reset and pulls == 2:
+                if reset and pulls == rcount:
                     p_cnt = 0
                 if pulls == target:
                     histogram[pull+1] += 1
@@ -165,6 +164,7 @@ def cmd(kwargs):
     run_old = kwargs['old']
     target  = kwargs['target']
     reset   = kwargs['reset']
+    rcount  = kwargs['reset_count']
     Verbose = kwargs['verbose']
 
     # 2. and do it's bidding
@@ -172,7 +172,7 @@ def cmd(kwargs):
         new_res = new_sim(target, cycles, count, Verbose)
 
     if run_old:
-        old_res = old_sim(target, cycles, reset, Verbose)
+        old_res = old_sim(target, cycles, reset, rcount, Verbose)
 
     MAX_PULLS = (target * 200)
     if run_new and run_old:
