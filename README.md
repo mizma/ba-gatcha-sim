@@ -6,10 +6,8 @@ BlueArchive gatcha monte-carlo simulation
 Installation
 ------------------------------------------------------------------------
 
-Check-out the repository, setup a venv and run the following
-
 ~~~shell
-> pip install .
+> pipx install git+https://github.com/mizma/ba-gatcha-sim.git
 ~~~
 
 Usage
@@ -18,7 +16,7 @@ Usage
 Command Line tool description
 
 ~~~shell
-> basim --option1 --argopt1 arg -v
+> basim -n -o -t 2 -c 100000 > result.csv
 ~~~
 
 * `-o, --old`
@@ -39,7 +37,6 @@ Command Line tool description
   * Show the version and exit.
 * `--help`
   * Show this message and exit.
-
 
 Known Issues
 ------------------------------------------------------------------------
