@@ -3,8 +3,6 @@ ba-gatcha-sim
 
 BlueArchive gatcha monte-carlo simulation
 
-ADD MY CLI DETAIL DESCRIPTION HERE
-
 Installation
 ------------------------------------------------------------------------
 
