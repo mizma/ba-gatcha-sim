@@ -57,7 +57,7 @@ def pout(msg=None, Verbose=0, level=Level.INFO, newline=True):
 
 def old_pull(count, Verbose=0):
     if count >= 199:
-        return True
+        return True # TODO: この場合200連目でピックアップ排出が0.7%のほうで出た場合、１体目ならそこで終了できる事が考慮できていない。
     elif random.random() < 0.007:
         return True
     else:
@@ -70,13 +70,14 @@ def old_sim(target=2, cycles=10000, reset=False, rcount=2, Verbose=0):
 
     histogram = [0] * (MAX_PULLS + 1)
     cumulative = [0] * (MAX_PULLS + 1)
-    for cycle in range(cycles):
+    for _ in range(cycles):
         pulls   = 0 # initialize current pull count
         p_cnt     = 0 # initialize the pitty count
         # run simulation for cycles times
 
         for pull in range(MAX_PULLS):
             if old_pull(p_cnt, Verbose):
+                p_cnt += 1
                 pout(f"Success at pull={pull}, p_cnt={p_cnt}", Verbose, Level.DEBUG)
                 pulls += 1
                 if reset and pulls == rcount:
@@ -84,7 +85,8 @@ def old_sim(target=2, cycles=10000, reset=False, rcount=2, Verbose=0):
                 if pulls == target:
                     histogram[pull+1] += 1
                     break
-            p_cnt += 1
+            else:
+                p_cnt += 1
             if p_cnt == 200:
                 p_cnt = 0
         pass
@@ -117,7 +119,7 @@ def new_sim(target=2, cycles=10000, count=0, Verbose=0):
 
     histogram = [0] * (MAX_PULLS + 1)
     cumulative = [0] * (MAX_PULLS + 1)
-    for cycle in range(cycles):
+    for _ in range(cycles):
         pulls   = 0 # initialize current pull count
         p_cnt     = count # initialize the pitty count
         # run simulation for cycles times
@@ -178,13 +180,13 @@ def cmd(kwargs):
     if run_new and run_old:
         print("PULLS,NEW HIST,NEW CUMUL(%),OLD HIST,OLD CUMUL(%)")
         for i in range(MAX_PULLS + 1):
-            print(f"{i},{new_res["hist"][i]},{(new_res["cumul"][i]/cycles)*100},{old_res["hist"][i]},{(old_res["cumul"][i]/cycles)*100}")
+            print(f"{i},{(new_res['hist'][i]/cycles)*100},{(new_res['cumul'][i]/cycles)*100},{(old_res['hist'][i]/cycles)*100},{(old_res['cumul'][i]/cycles)*100}")
     elif run_new:
         print("PULLS,NEW HIST,NEW CUMUL(%)")
         for i in range(MAX_PULLS + 1):
-            print(f"{i},{new_res["hist"][i]},{(new_res["cumul"][i]/cycles)*100}")
+            print(f"{i},{(new_res['hist'][i]/cycles)*100},{(new_res['cumul'][i]/cycles)*100}")
     elif run_old:
         print("PULLS,OLD HIST,OLD CUMUL(%)")
         for i in range(MAX_PULLS + 1):
-            print(f"{i},{old_res["hist"][i]},{(old_res["cumul"][i]/cycles)*100}")
+            print(f"{i},{(old_res['hist'][i]/cycles)*100},{(old_res['cumul'][i]/cycles)*100}")
     pass
