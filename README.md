@@ -22,15 +22,23 @@ Command Line tool description
 * `-o, --old`
   * run old gatcha sim
 * `-r, --reset`
-  * reset old count after 2 PU pull
+  * reset old count and mileage after `<rcnt>` PU pull
+* `-R, --reset-count <rcnt>`
+  * reset old count and mileage after `<rcnt>` PU pull
+  * Default: 2
+* `-m, --mileage`
+  * use mileage tickets
 * `-n, --new`
   * run new gatcha sim
 * `-t, --target <tgt>`
   * simulate up to target pickup count
+  * Default: 2
 * `-c, --cycles <cyc>`
   * number of cycles to simulate
+  * Default: 10000
 * `-C, --count <cnt>`
   * initial count for new gatcha
+  * Default: 0
 * `-v, --verbose`
   * output in verbose mode
 * `--version`

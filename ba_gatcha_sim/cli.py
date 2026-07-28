@@ -22,12 +22,16 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
     )
 @click.option(
     '--reset', '-r', is_flag=True,
-    help='reset old count after <rcnt> PU pull'
+    help='reset old count and mileage after <rcnt> PU pull'
     )
 @click.option(
     '--reset-count', '-R', default=2, type=int,
     metavar='<rcnt>',
-    help='reset old count after <rcnt> PU pull'
+    help='reset old count and mileage after <rcnt> PU pull'
+    )
+@click.option(
+    '--mileage', '-m', is_flag=True,
+    help='use mileage tickets'
     )
 @click.option(
     '--new', '-n', is_flag=True,

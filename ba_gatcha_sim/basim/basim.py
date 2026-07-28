@@ -112,7 +112,7 @@ def new_pull(count, Verbose=0):
     else:
         return False
 
-def new_sim(target=2, cycles=10000, count=0, reset=False, rcount=2, Verbose=0):
+def new_sim(target=2, cycles=10000, count=0, reset=False, rcount=2, use_mile=False, Verbose=0):
     pout("Starting New Gatcha Simulation")
     pout(f"target={target}, cycles={cycles}, count={count}", Verbose, Level.DEBUG )
     MAX_PULLS = (target * 200)
@@ -125,10 +125,13 @@ def new_sim(target=2, cycles=10000, count=0, reset=False, rcount=2, Verbose=0):
         tickets = 0
         tickets_used = 0
         mileage = 0
-        mileage_bonus = {
-            70, 130, 150, 170,
-            270, 330, 350, 370
-        }
+        if use_mile:
+            mileage_bonus = {
+                70, 130, 150, 170,
+                270, 330, 350, 370
+            }
+        else:
+            mileage_bonus = {}
         # run simulation for cycles times
 
         for pull in range(MAX_PULLS):
@@ -207,11 +210,12 @@ def cmd(kwargs):
     target  = kwargs['target']
     reset   = kwargs['reset']
     rcount  = kwargs['reset_count']
+    use_mile = kwargs['mileage']
     Verbose = kwargs['verbose']
 
     # 2. and do it's bidding
     if run_new:
-        new_res = new_sim(target, cycles, count, reset, rcount, Verbose)
+        new_res = new_sim(target, cycles, count, reset, rcount, use_mile, Verbose)
 
     if run_old:
         old_res = old_sim(target, cycles, reset, rcount, Verbose)
