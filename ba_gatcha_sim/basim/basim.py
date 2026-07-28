@@ -112,7 +112,7 @@ def new_pull(count, Verbose=0):
     else:
         return False
 
-def new_sim(target=2, cycles=10000, count=0, Verbose=0):
+def new_sim(target=2, cycles=10000, count=0, reset=False, rcount=2, Verbose=0):
     pout("Starting New Gatcha Simulation")
     pout(f"target={target}, cycles={cycles}, count={count}", Verbose, Level.DEBUG )
     MAX_PULLS = (target * 200)
@@ -122,18 +122,58 @@ def new_sim(target=2, cycles=10000, count=0, Verbose=0):
     for _ in range(cycles):
         pulls   = 0 # initialize current pull count
         p_cnt     = count # initialize the pitty count
+        tickets = 0
+        tickets_used = 0
+        mileage = 0
+        mileage_bonus = {
+            70, 130, 150, 170,
+            270, 330, 350, 370
+        }
         # run simulation for cycles times
 
         for pull in range(MAX_PULLS):
+            pout(f"[{pull}] : pulls={pulls} p_cnt={p_cnt} tickets={tickets} utickets={tickets_used} mile={mileage}",
+                 Verbose, Level.DEBUG )
+            if tickets > 0:
+                success = False
+                for _ in range(tickets):
+                    mileage += 1
+                    tickets -= 1
+                    tickets_used += 1
+                    if new_pull(p_cnt, Verbose):
+                        p_cnt = 0
+                        success = True
+                    else:
+                        p_cnt += 1
+                pout(f"[{pull}] : TICKET pulls={pulls} p_cnt={p_cnt} tickets={tickets} utickets={tickets_used} mile={mileage}",
+                    Verbose, Level.DEBUG )
+                if success:
+                    pulls += 1
+                    if reset and pulls == rcount:
+                        mileage = 0
+                    if pulls == target:
+                        pout(f"RECORD: {pull+tickets_used}", Verbose, Level.DEBUG)
+                        histogram[pull] += 1
+                        break
+
             if new_pull(p_cnt, Verbose):
-                pout(f"Success at pull={pull}, p_cnt={p_cnt}", Verbose, Level.DEBUG)
+                pout(f"Success at pull={pull+1}, p_cnt={p_cnt}", Verbose, Level.DEBUG)
                 p_cnt   = 0     # Reset pitty count every successful pull
+                mileage += 1
+                if mileage in mileage_bonus:
+                    tickets += 10
                 pulls   += 1
+                if reset and pulls == rcount:
+                    mileage = 0
                 if pulls == target:
+                    pout(f"RECORD: {pull+1+tickets_used}", Verbose, Level.DEBUG)
                     histogram[pull+1] += 1
                     break
             else:
-                p_cnt     += 1
+                p_cnt += 1
+                mileage += 1
+                if mileage in mileage_bonus:
+                    tickets += 10
         pass
     pout(f"NEW: {histogram}",Verbose,Level.DEBUG)
     cumul = 0
@@ -171,7 +211,7 @@ def cmd(kwargs):
 
     # 2. and do it's bidding
     if run_new:
-        new_res = new_sim(target, cycles, count, Verbose)
+        new_res = new_sim(target, cycles, count, reset, rcount, Verbose)
 
     if run_old:
         old_res = old_sim(target, cycles, reset, rcount, Verbose)
